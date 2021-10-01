@@ -22,6 +22,7 @@ class SendAndRecieveRasa:
             "metadata" : metadata
         }
         response_from_rasa_server = requests.post(url, data = json.dumps(payload))
+        print(response_from_rasa_server.text)
         return response_from_rasa_server
 
 
