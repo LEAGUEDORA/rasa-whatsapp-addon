@@ -10,7 +10,7 @@ import json
 
 
 # rasa_url = "http://194.195.119.55:5005/webhooks/sellerid/webhook/"
-rasa_url = "http://localhost:5005/webhooks/sellerid/webhook/"
+rasa_url = "http://194.195.119.55:5005/webhooks/sellerid/webhook/"
 restart_response = "Please start your conversation again."
 app = Sanic("whatsapp")
 file_name = "neglect_data.json"
