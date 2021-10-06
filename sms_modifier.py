@@ -1,6 +1,7 @@
 from typing import Text, List, Dict
 import json
 import requests
+from whatsapp import StoreTemporaryData
 file_name = "users_data.json"
 
 
@@ -239,3 +240,5 @@ class checkElements:
         """
         if command == 'restart':
             JSONModifier.clearData(senderID = self.senderID)
+        if command == 'neglect':
+            StoreTemporaryData().insertData(user = self.senderID)
