@@ -11,8 +11,6 @@ from sms_modifier import JSONModifier, SMSModification, SendAndRecieveRasa, Stor
 RASA_URL = "http://localhost:5005/webhooks/rest/webhook/" #Default
 RESTART_RESPONSE = "Please start your conversation again." # DEfualt
 app = Sanic(uuid.uuid4()) #Default
-FILE_NAME_FOR_USER_PAYLOAD = "users_data.json"  
-FILE_NAME_FOR_NEGLECT = "neglect.json"
 DEFAULT_ERROR_MESSAGE = "Please only select from the given category.\nPlease type '/restart' to restart the conversation"
  
 

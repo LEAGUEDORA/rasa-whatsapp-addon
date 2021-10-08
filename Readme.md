@@ -23,6 +23,16 @@ Clone this repository using
 git clone https://github.com/LEAGUEDORA/rasa-whatsapp-addon.git
 ```
 
+
+
+And then cd into the app
+
+```sh
+cd rasa-whatsapp-addon
+```
+
+
+
 Install the required packages
 
 ```
@@ -80,4 +90,3 @@ docker run --name whatsapp -d -p 5000:5000 whatsapp
 ```
 
 > The key whatsapp can be your own image name. If know docker well, change the image name. And also don't forget to change it in the `docker-compose.yml` also.
->

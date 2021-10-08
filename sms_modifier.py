@@ -1,7 +1,8 @@
 from typing import Text, List, Dict
 import json
 import requests
-from whatsapp import FILE_NAME_FOR_NEGLECT, FILE_NAME_FOR_USER_PAYLOAD
+FILE_NAME_FOR_USER_PAYLOAD = "users_data.json"  
+FILE_NAME_FOR_NEGLECT = "neglect.json"
 
 
 class StoreTemporaryData:
