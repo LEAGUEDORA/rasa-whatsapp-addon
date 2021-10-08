@@ -1,10 +1,42 @@
 from typing import Text, List, Dict
 import json
 import requests
-from whatsapp import StoreTemporaryData
-file_name = "users_data.json"
+from whatsapp import FILE_NAME_FOR_NEGLECT, FILE_NAME_FOR_USER_PAYLOAD
 
 
+class StoreTemporaryData:
+    """
+    Stores the temporary data of the user especially the senderID that sanic needs to neglect
+    """
+    @classmethod
+    def findData(cls, user: Text):
+        try:
+            with open(FILE_NAME_FOR_NEGLECT, "r") as f:
+                data = json.load(f)
+            return user in data
+        except:
+            return False
+    
+    @classmethod
+    def insertData(cls, user: Text):
+        try:
+            with open(FILE_NAME_FOR_NEGLECT, "w") as f:
+                data = json.load(f)
+        except:
+            data = []
+        with open(FILE_NAME_FOR_NEGLECT, "w") as f:
+            if user in data:
+                return
+            data.append(user)
+            json.dump(data, f)
+
+    @classmethod
+    def deleteData(cls, user: Text):
+        with open(FILE_NAME_FOR_NEGLECT, "r") as f:
+            data = json.load(f)
+        if user in data:
+            data.remove(user)
+            return
 
 
 class SendAndRecieveRasa:
@@ -22,17 +54,19 @@ class SendAndRecieveRasa:
             "message" : user_message,
             "metadata" : metadata
         }
-        response_from_rasa_server = requests.post(url, data = json.dumps(payload))
-        print(response_from_rasa_server.text)
-        return response_from_rasa_server
+        try:
+            response_from_rasa_server = requests.post(url, data = json.dumps(payload))
+            return response_from_rasa_server
+        except:
+            None
 
 
 class JSONModifier:
 
     @classmethod
-    def FreshOpen(cls, file_name: str = file_name):
+    def FreshOpen(cls, file_name: str = FILE_NAME_FOR_USER_PAYLOAD):
         """
-        Opening the file
+        Opening the file to store the data
         """
         with open(file_name) as users_file:
             try:
@@ -42,16 +76,16 @@ class JSONModifier:
         return users_data
 
     @classmethod
-    def dumpData(cls, users_data: Dict, file_name: str = file_name):
+    def dumpData(cls, users_data: Dict, file_name: str = FILE_NAME_FOR_USER_PAYLOAD):
         """
-        Dump the userdata
+        Dump the userdata to the JSON File
         """
         with open(file_name, "w") as users_file:
             json.dump(users_data, users_file)
         return True
     
     @classmethod
-    def clearData(cls, senderID: Text, file_name: str = file_name):
+    def clearData(cls, senderID: Text, file_name: str = FILE_NAME_FOR_USER_PAYLOAD):
         """
         Clear the data of the particular User
         """
@@ -88,9 +122,6 @@ class SMSModification:
         except:
             return False
         return payload
-
-
-
 
 
     @classmethod

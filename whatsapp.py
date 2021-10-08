@@ -2,53 +2,19 @@
 
 from typing import Text, Dict
 from sanic import Sanic
-from sanic.response import json, HTTPResponse
+from sanic.response import HTTPResponse
 from sanic.request import Request
-import sms_modifier
-import json
-
-
+import uuid
+from sms_modifier import JSONModifier, SMSModification, SendAndRecieveRasa, StoreTemporaryData, checkElements
 
 # rasa_url = "http://194.195.119.55:5005/webhooks/sellerid/webhook/"
-rasa_url = "http://194.195.119.55:5005/webhooks/sellerid/webhook/"
-restart_response = "Please start your conversation again."
-app = Sanic("whatsapp")
-file_name = "neglect_data.json"
-
-default_error_message = "Please only select from the given category.\nPlease type '/restart' to restart the conversation"
+RASA_URL = "http://localhost:5005/webhooks/rest/webhook/" #Default
+RESTART_RESPONSE = "Please start your conversation again." # DEfualt
+app = Sanic(uuid.uuid4()) #Default
+FILE_NAME_FOR_USER_PAYLOAD = "users_data.json"  
+FILE_NAME_FOR_NEGLECT = "neglect.json"
+DEFAULT_ERROR_MESSAGE = "Please only select from the given category.\nPlease type '/restart' to restart the conversation"
  
-
-class StoreTemporaryData:
-
-    @classmethod
-    def findData(cls, user: Text):
-        try:
-            with open(file_name, "r") as f:
-                data = json.load(f)
-            return user in data
-        except:
-            False
-    
-    @classmethod
-    def insertData(cls, user: Text):
-        try:
-            with open(file_name, "w") as f:
-                data = json.load(f)
-        except:
-            data = []
-        with open(file_name, "w") as f:
-            if user in data:
-                return
-            data.append(user)
-            json.dump(data, f)
-
-    @classmethod
-    def deleteData(cls, user: Text):
-        with open(file_name, "r") as f:
-            data = json.load(f)
-        if user in data:
-            data.remove(user)
-            return
 
 
 @app.route('/incoming', methods = ['POST'])
@@ -60,31 +26,33 @@ def receiveIncomingMessage(request):
     if user_message == "/restart":
         #If the user gave /restart
         try:
-            sms_modifier.JSONModifier.clearData(senderID = senderID)
-            sms_modifier.SendAndRecieveRasa.sendResponse(user_message = user_message, senderID = senderID, url = rasa_url)
+            JSONModifier.clearData(senderID = senderID)
+            SendAndRecieveRasa.sendResponse(user_message = user_message, senderID = senderID, url = RASA_URL)
         except:
             print("No key but restarted")
-        return HTTPResponse(restart_response)
+        return HTTPResponse(RESTART_RESPONSE)
     #Check_initial_user returns true for initial user or false for error or payload
-    check_initial_user = sms_modifier.SMSModification.checkInitialUser(message = user_message, senderID = senderID) #Check if it the initial user or not
+    check_initial_user = SMSModification.checkInitialUser(message = user_message, senderID = senderID) #Check if it the initial user or not
     if check_initial_user is True:
         # Initaial user
         user_message = user_message
     elif check_initial_user is False:
+        # NOT an initial user
         if StoreTemporaryData().findData(senderID):
-            rasa_response = sms_modifier.SendAndRecieveRasa.sendResponse(user_message = user_message, senderID = senderID, url = rasa_url, metadata = metadata)
-            converted_bot_response = sms_modifier.checkElements(senderID = senderID, payload = rasa_response.json()).checkAll()
+            # IS in neglect list
+            rasa_response = SendAndRecieveRasa.sendResponse(user_message = user_message, senderID = senderID, url = RASA_URL, metadata = metadata)
+            converted_bot_response = checkElements(senderID = senderID, payload = rasa_response.json()).checkAll()
             StoreTemporaryData().deleteData(senderID)
             return HTTPResponse(converted_bot_response)
-        sms_modifier.JSONModifier.clearData(senderID = senderID)
+        JSONModifier.clearData(senderID = senderID) # if not in in neglect
 
-        return HTTPResponse(default_error_message)
+        return HTTPResponse(DEFAULT_ERROR_MESSAGE)
     else:
         user_message = check_initial_user
-    rasa_response = sms_modifier.SendAndRecieveRasa.sendResponse(user_message = user_message, senderID = senderID, url = rasa_url, metadata = metadata)
-    converted_bot_response = sms_modifier.checkElements(senderID = senderID, payload = rasa_response.json()).checkAll()
+    rasa_response = SendAndRecieveRasa.sendResponse(user_message = user_message, senderID = senderID, url = RASA_URL, metadata = metadata)
+    converted_bot_response = checkElements(senderID = senderID, payload = rasa_response.json()).checkAll()
     return HTTPResponse(converted_bot_response)
 
 
 if __name__ == "__main__":
-    app.run(debug = True, port = 5000)
+    app.run(debug = True, port = 5000, host = '0.0.0.0')
