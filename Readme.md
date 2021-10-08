@@ -82,11 +82,3 @@ docker build . -t whatsapp
 ```
 docker-compose up -d
 ```
-
-**Using `docker run`**
-
-```
-docker run --name whatsapp -d -p 5000:5000 whatsapp
-```
-
-> The key whatsapp can be your own image name. If know docker well, change the image name. And also don't forget to change it in the `docker-compose.yml` also.
