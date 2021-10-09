@@ -86,6 +86,8 @@ to your RASA server URL
 
 If you wish to change the database from `JSON` to any other database you can find methods in `sms_modifier.py`. You have to change `StoreTemporaryData` and `JSONModifier` classes and update the methods.
 
+###### Also do not forget to change the TODO section in `whatsapp.py` to your service provider API
+
 ---
 
 ## Deploy
