@@ -203,6 +203,7 @@ class checkElements:
         self.payload_text = "payload"
         self.soundcloud = "soundcloud"
         self.custom = "custom"
+        self.image = "image"
         self.json_message = {}
     
 
@@ -210,12 +211,15 @@ class checkElements:
         has_text = self._has_text()
         has_buttons = self._has_buttons()
         has_cmd = self._has_json_message()
+        has_image = self._has_image()
         text = ""
         buttons_text = ""
         sound_text = ""
         json_message = {}
         if has_text:
             text = self.payload[0][self.text]
+        if has_image:
+            text += self.payload[0][self.image]
         if not has_buttons:
             # If returned False
             users_data = JSONModifier.FreshOpen()
@@ -230,6 +234,15 @@ class checkElements:
             cmd = has_cmd['cmd']
             self.executeCommands(cmd)
         return self._convertToString([text, buttons_text, sound_text])
+
+    def _has_image(self):
+        """
+        Checks whether an image link is provided within the response
+        """
+        try:
+            return self.image in self.payload[0].keys()
+        except:
+            return False
 
     def _has_text(self):
         """
