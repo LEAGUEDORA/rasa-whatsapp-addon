@@ -17,10 +17,12 @@ DEFAULT_ERROR_MESSAGE = "Please only select from the given category.\nPlease typ
 
 @app.route('/incoming', methods = ['POST'])
 def receiveIncomingMessage(request):
-    message = request.json
-    user_message = message['message']
-    senderID = message['sender']
-    metadata = message['metadata']
+    # TODO: Hey developer configure this to change according to your SMS/USSD/WhatsApp API provider data
+    message_from_service = request.json
+    user_message = message_from_service.get("message")
+    senderID = message_from_service.get("sender")
+    metadata = message_from_service.get('metadata')
+    # Till here
     if user_message == "/restart":
         #If the user gave /restart
         try:
