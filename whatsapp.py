@@ -10,7 +10,7 @@ from sms_modifier import JSONModifier, SMSModification, SendAndRecieveRasa, Stor
 # RASA_URL = "http://194.195.119.55:5005/webhooks/sellerid/webhook/"
 RASA_URL = "http://localhost:5005/webhooks/rest/webhook/" #Default
 RESTART_RESPONSE = "Please start your conversation again." # DEfualt
-app = Sanic(uuid.uuid4()) #Default
+app = Sanic(str(uuid.uuid4())) #Default
 DEFAULT_ERROR_MESSAGE = "Please only select from the given category.\nPlease type '/restart' to restart the conversation"
  
 
