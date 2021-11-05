@@ -7,7 +7,6 @@ from sanic.request import Request
 import uuid
 from sms_modifier import JSONModifier, SMSModification, SendAndRecieveRasa, StoreTemporaryData, checkElements
 
-# RASA_URL = "http://194.195.119.55:5005/webhooks/sellerid/webhook/"
 RASA_URL = "http://localhost:5005/webhooks/rest/webhook/" #Default
 RESTART_RESPONSE = "Please start your conversation again." # DEfualt
 app = Sanic(str(uuid.uuid4())) #Default
@@ -17,9 +16,13 @@ DEFAULT_ERROR_MESSAGE = "Please only select from the given category.\nPlease typ
 @app.route('/incoming', methods = ['POST'])
 def receiveIncomingMessage(request):
     message = request.json
+
+    """
+    TODO: Change the below three lines according to your service provider
+    """
     user_message = message['message']
     senderID = message['sender']
-    metadata = message['metadata']
+    metadata = message.get('metadata', None)
     if user_message == "/restart":
         #If the user gave /restart
         try:
