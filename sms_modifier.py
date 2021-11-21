@@ -1,4 +1,4 @@
-from typing import Text, List, Dict
+from typing import Text, List, Dict, Any
 import json
 import requests
 FILE_NAME_FOR_USER_PAYLOAD = "users_data.json"  
@@ -216,32 +216,14 @@ class checkElements:
                 text += i[self.text] + "\n\n"
             if  self.__hasButtons(i):
                 ## Adds the data only if there are buttons
-                buttons_text += SMSModification.InsertBotResponse(self.senderID, i) + "\n\n"
+                text += SMSModification.InsertBotResponse(self.senderID, i) + "\n\n"
             
             if self.__hasJsonMessage(i):
                 self.__executeCommands(i[self.custom])
             else:
                 self.__executeCommands("neglect")
-        return self.__convertToString([text, buttons_text])
-        # if has_text:
-        #     text =  ""
-        #     for i in self.payload:
+        return text
 
-        #     self.payload[0][self.text]
-        # if not has_buttons:
-        #     # If returned False
-        #     users_data = JSONModifier.FreshOpen()
-        #     users_data[self.senderID] = []
-        #     JSONModifier.dumpData(users_data = users_data)
-        # else:
-        #     # If not false
-        #     buttons_text = SMSModification.InsertBotResponse(self.senderID, self.payload)
-        
-        # if has_cmd is not False:
-        #     # If there is a command and cmd is not False
-        #     cmd = has_cmd['cmd']
-        #     self.executeCommands(cmd)
-        # return self._convertToString([text, buttons_text, sound_text])
 
     def __hasText(self, payload: Dict[Text, Any]) -> bool:
         """
