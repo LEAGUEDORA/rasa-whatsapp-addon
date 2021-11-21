@@ -7,7 +7,7 @@ from sanic.request import Request
 import uuid
 from sms_modifier import JSONModifier, SMSModification, SendAndRecieveRasa, StoreTemporaryData, checkElements
 
-RASA_URL = "http://localhost:5005/webhooks/rest/webhook/" #Default
+RASA_URL = "http://localhost:5005/webhooks/rest/webhook/" #Default for rasa
 RESTART_RESPONSE = "Please start your conversation again." # DEfualt
 app = Sanic(str(uuid.uuid4())) #Default
 DEFAULT_ERROR_MESSAGE = "Please only select from the given category.\nPlease type '/restart' to restart the conversation"
